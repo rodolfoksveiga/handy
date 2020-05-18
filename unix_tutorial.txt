@@ -1,0 +1,112 @@
+unix tutorial
+
+6. other useful unix commands
+
+df
+	- report file system disk space
+	$ df .
+		- how much was used on each directory
+
+du
+	- estimate file space usage
+	$ du -s *
+		- summarizes (-s) file space of all directories and files
+
+????? zip
+
+zcat
+	- read and works with compressed data (whitout uncompress)
+	$ zcat file_name.gz
+		- reads the file
+	$ zcat file_name.gc | less
+		- reads the file and navigates line by line
+		
+file
+	- determine file type
+	$ file *
+		- prints all the file types
+
+diff
+	- compare files line by line
+	$ diff file1 file2
+		- prints differences between files
+		- pipe indicates which file contain different lines (< indicates file1 and 				> indicates file2)
+
+find
+	- search for files in a directory hierarchy
+	$ find . -name '*.txt' -print
+		- searches for files with the extention .txt inside working directory
+	$ find . -size +1M -ls
+		- prints a list of the files whose sizes are over 1mb
+
+history - history of commands
+
+
+7.1. compiling unix software packages
+	- all high-level language code must be converted into a form the computer understands
+	- c language source code -> assembly language (lower-level language) -> object code which are fragments of code which the computer understands directly -> linking each object code to libraries with correspondent built-in functions -> executable program
+	- make and configure are commands that simplify this task using Makefiles in the package
+
+make
+	- manage large programas or group of programs
+	- get compile rules from Makefile
+
+Makefile
+	- set of variables which defines the compilation
+	- defines how to compile the software, how to install the compiled executables, where to allocate installation files, etc
+	- sometimes it's highly dependent on linux distribution
+
+configure
+	- creates a Makefile in each directory of the package
+	- guess correct values for various system-dependent variables used in the compilation
+
+simplest way to compile a package
+	1. $ cd
+		- changes to directory containing the package's source code
+	2. $ ./configure
+		- configures the package for your system
+		- it's possible to define directory for independente files (such as documentation, data and configuration files) with --prefix, and dependent files (such as executables) with --exec-prefix
+	3. $ make
+		- compiles the package
+	4. $ make install
+		- installs the programs and any data files and documentation
+	5. $ make clean
+		- removes programs binaries and object files from the source code directory
+
+easiest way to install a software
+	1. download file_name.tar.gz
+	2. $ cd Downloads/
+	3. $ chmod +x file_name.tar.gz
+	4. $ tar -xvf file_name.tar
+	5. $ cd file_name
+	6. $ less README
+	7. $ less INSTALL
+	8. ./configure
+		- 2nd option
+			8.a. $ mkdir install_path
+			8.b. $ ./configure --prefix=install_path
+		- if configure has run correctly, it will have created a Makefile
+	9. $ make
+	10. $ make check
+	11. $ make install
+		- file will be installed in install_path, if steps 8.a and 8.b were followed
+	- many directories will be created, between them:
+		- bin has binary executables
+		- info has gnu info formatted full documentation
+		- man has manual pages
+		- share has shared data files
+	- steps from 12 to 15 can be used to strip off debug code
+	12. cd install_path/bin
+	13. ls -l
+	14. file software_name
+	14. strip software_name
+	15. file software_name
+
+to run the pre-installed software
+	1. $ cd install_path/bin
+	2. $ ./software_name
+	
+
+
+
+
