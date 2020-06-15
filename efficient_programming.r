@@ -85,7 +85,3 @@ if(interactive())
 # ls() has the same function as linux shell ls()
 
 installed.packages()
-
-# install packages from terminal
-# R -e "install.packages('raster', repos = 'http://cran.rstudio.com/',
-#                        lib = '/scratch/projeto/usuario/R')"
