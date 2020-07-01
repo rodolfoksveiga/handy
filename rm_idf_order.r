@@ -15,4 +15,4 @@ RmIDFOrder = function(seed_path) {
 }
 
 # application
-RmIDFOrder('/home/rodox/git/master_ufsc/seed/l_9.0.epJSON')
+RmIDFOrder('~/git/master_ufsc/seed/seed3.epJSON')
