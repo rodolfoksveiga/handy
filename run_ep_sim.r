@@ -1,6 +1,5 @@
-# load libraries ####
-pkgs = c('dplyr', 'parallel', 'stringr')
-lapply(pkgs, library, character.only = T)
+# load global environment ####
+load('~/git/handy/inmet.rds')
 
 # base functions ####
 # compile errors into one file
@@ -105,8 +104,8 @@ RunEPSim = function(model_path, epw_path, prefix, output_dir) {
 }
 
 # main function ####
-ProcessEPSims = function(sample, load_files, models_dir, epws_dir,
-                         weathers, output_dir, cores_left, form = '\\.epJSON') {
+ProcessEPSims = function(sample, load_files, models_dir, epws_dir, weathers,
+                         output_dir, cores_left, inmet, form = '\\.epJSON') {
   # load_files: 'TRUE' (generate grid according to files inside models_dir and epws_dir) or
     # 'FALSE' (load the sample grid)
   # models_dir: energyplus simulation files directory
@@ -117,9 +116,8 @@ ProcessEPSims = function(sample, load_files, models_dir, epws_dir,
   # output_dir: output directory
   # form: simulation file format (.epJSON or .idf)
   # list models and weather files path in a grid
-  load_files = TRUE
   if (load_files) {
-    sims_grid = DefSimGrid(models_dir, epws_dir, weathers, form)
+    sims_grid = DefSimGrid(models_dir, epws_dir, weathers, inmet, form)
   } else {
     sims_grid = select(sample, model_path, epw_path, prefix)
   }
