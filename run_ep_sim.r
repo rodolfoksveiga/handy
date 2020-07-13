@@ -36,20 +36,26 @@ CountErrs = function(dir, ind, comp_path,
                paste0('    Warnings = ', sum_errs[2])), summ_path)
 }
 # create a grid with model and weather files
-  # add a column epw's respective weathers
-    # it's be used to name output files
-DefSimGrid = function(models_dir, epws_dir, weathers, form) {
+# add a column epw's respective weathers
+# it's be used to name output files
+DefSimGrid = function(models_dir, epws_dir, weathers, inmet, form) {
   # models_dir: models directory
   # epws_dir: weather files directory
   # weathers: weathers of interest
   # form: simulation files format
   models_path = dir(models_dir, form, full.names = TRUE)
-  pattern = str_flatten(paste0(weathers, '.*\\.epw'), collapse = '|')
-  epws_path = dir(epws_dir, pattern, full.names = TRUE)
-  sims_grid = expand.grid('model' = models_path, 'epw' = epws_path,
+  sims_grid = expand.grid('model_path' = models_path, 'prefix' = weathers,
                           stringsAsFactors = FALSE)
-  pattern = str_flatten(weathers, collapse = '|')
-  sims_grid$weather = str_extract(sims_grid$epw, pattern)
+  index = sapply(weathers, function(x, y) which(x == y), inmet$municipio)
+  sims_grid$epw_path = inmet$arquivo_climatico[index[sims_grid$prefix]]
+  sims_grid$epw_path = paste0(epws_dir, sims_grid$epw_path, '.epw')
+  zbs = inmet$zb[index[sims_grid$prefix]]
+  index = grepl('ref17', sims_grid$model_path) & zbs == 8 |
+    grepl('ref8', sims_grid$model_path) & zbs != 8
+  sims_grid = sims_grid[!index, ]
+  models_name = sims_grid$model_path %>%
+    basename() %>% str_remove('\\.epJSON')
+  sims_grid$prefix = paste0(sims_grid$prefix, '_', models_name)
   return(sims_grid)
 }
 # label error files
@@ -59,14 +65,13 @@ LabelErr = function(path) {
   writeLines(c(paste0('Sim File: ', path), '', text, '\n'), path)
 }
 # remove suffix ('out') from a file name
-RnmFile <- function(path) {
+RnmFile = function(path) {
   # path: file path/name
   file.rename(path, paste0(str_sub(path, 0, -8), str_sub(path, -4, -1)))
 }
 # remove unsefull files
-RmUnsFiles <- function(dir, rm_all_but = c('.csv', '.err'),
-                       rm_also = c('sqlite.err', 'tbl.csv',
-                                   'ssz.csv', 'zsz.csv')) {
+RmUnsFiles = function(dir, rm_all_but = c('.csv', '.err'),
+                      rm_also = c('sqlite.err', 'tbl.csv', 'ssz.csv', 'zsz.csv')) {
   # dir: files directory
   # rm_all_but: files that shouldn't be removed
   rm_all_but = str_flatten(rm_all_but, collapse = '|')
@@ -90,31 +95,37 @@ SumErrs = function(start, end, comp_path) {
 
 # simulation function ####
 # run a single energyplus simulation
-RunEPSim <- function(model_path, epw_path, weather, output_dir) {
+RunEPSim = function(model_path, epw_path, prefix, output_dir) {
   # model_path: full model file path
   # epw_path: full weather file path
   # weather: correspondent weather file
   # output_dir: output directory
-  prefix = paste0(weather, '_', sub('.epJSON', '', basename(model_path)))
   args = c('-r', '-w', epw_path, '-d', output_dir, '-p', prefix, model_path)
   system2('energyplus', args, stdout = FALSE, stderr = FALSE)
 }
 
 # main function ####
-ProcessEPSims = function(models_dir, output_dir, epws_dir, weathers,
-                         form = '.epJSON') {
-  # models_dir:
-  # epws_dir:
-  # weathers: 
-  # output_dir: 
-  # form: 
-  # comp_name: 
-  # summ_name: 
+ProcessEPSims = function(sample, load_files, models_dir, epws_dir,
+                         weathers, output_dir, cores_left, form = '\\.epJSON') {
+  # load_files: 'TRUE' (generate grid according to files inside models_dir and epws_dir) or
+    # 'FALSE' (load the sample grid)
+  # models_dir: energyplus simulation files directory
+  # epws_dir: energyplus weather files directory
+  # weathers: vector of chosen weathers
+    # e.g.: c('rio_de_janeiro', 'sao_paulo')
+  # sample: sample grid with simulation informations
+  # output_dir: output directory
+  # form: simulation file format (.epJSON or .idf)
   # list models and weather files path in a grid
-  sims_grid = DefSimGrid(models_dir, epws_dir, weathers, form)
+  load_files = TRUE
+  if (load_files) {
+    sims_grid = DefSimGrid(models_dir, epws_dir, weathers, form)
+  } else {
+    sims_grid = select(sample, model_path, epw_path, prefix)
+  }
   # run simulations in parallel
-  errs_ind = mcmapply(RunEPSim, sims_grid$model, sims_grid$epw,
-                      sims_grid$weather, output_dir, mc.cores = detectCores())
+  errs_ind = mcmapply(RunEPSim, sims_grid$model_path, sims_grid$epw_path,
+                      sims_grid$prefix, output_dir, mc.cores = detectCores() - cores_left)
   # remove all files but .csv and .err
   RmUnsFiles(output_dir)
   # list and rename the outputs left
@@ -127,5 +138,3 @@ ProcessEPSims = function(models_dir, output_dir, epws_dir, weathers,
   # count terminal and severe errors and warnings
   CountErrs(output_dir, errs_ind)
 }
-
-# application ####

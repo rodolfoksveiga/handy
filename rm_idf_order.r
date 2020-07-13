@@ -1,5 +1,5 @@
 # main function ####
-# remove 'idf_order'
+# remove 'idf_order' fields
 RmIDFOrder = function(seed_path) {
   seed = readLines(seed_path)
   print(paste('Old IDF order count:', sum(grepl('idf_order', seed))))
@@ -9,10 +9,6 @@ RmIDFOrder = function(seed_path) {
   seed = seed[!grepl('idf\\_order', seed)]
   print(paste('New IDF order count:', sum(grepl('idf_order', seed))))
   # write the 'epJSON' file
-  file_path = paste0(dirname(seed_path), '/no_order_', basename(seed_path))
-  writeLines(seed, file_path)
-  print(file_path)
+  writeLines(seed, seed_path)
+  print(seed_path)
 }
-
-# application
-RmIDFOrder('~/git/master_ufsc/seed/seed3.epJSON')
