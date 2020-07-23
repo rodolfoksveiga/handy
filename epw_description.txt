@@ -1,0 +1,88 @@
+WEATHER FILE
+    LOCATION [1, ]
+        [1, 2] - city
+        [1, 3] - state
+        [1, 4] - country
+        [1, 5] - source (inmet, tmy, etc.)
+        [1, 6] - wmo/identification number (6 digits)
+        [1, 7] - latitude (from -90 to +90)
+        [1, 8] - longitude (from -180 to + 180)
+        [1, 9] - timezone (from -12 to +12)
+        [1, 10] - altitude (from -1000 to 9999.9)
+    DESIGN CONDITIONS [2, ]
+        [2, 2] - number of design conditions
+    TYPICAL/EXTREME PERIODS [3, ]
+        [3, 2] - number of typical/extreme periods [6]
+        [3, 3] - typical/extreme period name (string)
+        [3, 4] - typical/extreme period type (typical or extreme)
+        [3, 5] - period start day
+        [3, 6] - period end day
+        [3, ...] - repeat cells from [3, 3] to [3, 6] for the next typical/extreme period
+    GROUND TEMPERATURE [4, ]
+        [4, 2] - number of ground temperature depths [3]
+        [4, 3] - ground temperature at depth 1
+        [4, 4] - soil condutivity at depth 1
+        [4, 5] - soil density at depth 1
+        [4, 6] - soil specific heat at depth 1
+        [4, 7] - ground average for january at depth 1
+        [4, 8] - ground average for february at depth 1
+        [4, 9] - ground average for march at depth 1
+        [4, 10] - ground average for april at depth 1
+        [4, 11] - ground average for may at depth 1
+        [4, 12] - ground average for june at depth 1
+        [4, 13] - ground average for july at depth 1
+        [4, 14] - ground average for august at depth 1
+        [4, 15] - ground average for september at depth 1
+        [4, 16] - ground average for october at depth 1
+        [4, 17] - ground average for november at depth 1
+        [4, 18] - ground average for december at depth 1
+        [4, ...] - repeat cells from [4, 3] to [4, 18] for the next ground depth
+    HOLIDAYS/DAYLIGHT SAVING - [5, ]
+    this data is not so important for us, since we do not use the holiday/daylight saving
+        [5, 2] - leap year observed (yes or no)
+    COMMENTS 1 [6, 2] - comment about the weather file
+    COMMENTS 2 [7, 2] - comment about the weather file
+    DATA PERIODS [8, ]
+        [8, 2] - number of data periods [1]
+        [8, 3] - number of records per hour [1]
+        [8, 4] - data period name/description [Data]
+        [8, 5] - start day of week [Sunday]
+        [8, 6] - data period start day [1/1]
+        [8, 7] - data period end day [12/31]
+    WEATHER DATA
+        [9 - ..., 1] - year
+        [9 - ..., 2] - month
+        [9 - ..., 3] - day
+        [9 - ..., 4] - hour
+        [9 - ..., 5] - minute
+        [9 - ..., 6] - data source and uncertainty flags
+        [9 - ..., 7] - dry bulb temperature
+        [9 - ..., 8] - dew point temperature
+        [9 - ..., 9] - relative humidity
+        [9 - ..., 10] - atmospheric station pressure
+        [9 - ..., 11] - extraterrestrial horizontal radiation
+        [9 - ..., 12] - extraterrestrial direct normal radiation
+        [9 - ..., 13] - horizontal infrared radiation intensity
+        [9 - ..., 14] - global horizontal radiation
+        [9 - ..., 15] - direct normal radiation
+        [9 - ..., 16] - diffuse horizontal radiation
+        [9 - ..., 17] - global horizontal illuminance
+        [9 - ..., 18] - direct normal illuminance
+        [9 - ..., 19] - diffuse horizontal illuminance
+        [9 - ..., 20] - zenith luminance
+        [9 - ..., 21] - wind direction
+        [9 - ..., 22] - wind speed
+        [9 - ..., 23] - total sky cover
+        [9 - ..., 24] - opaque sky cover
+        [9 - ..., 25] - visibility
+        [9 - ..., 26] - ceiling height
+        [9 - ..., 27] - present weather observation
+        [9 - ..., 28] - present weather codes
+        [9 - ..., 29] - precipitable water
+        [9 - ..., 30] - aerosol optical depth
+        [9 - ..., 31] - snow depth
+        [9 - ..., 32] - days since last snowfall
+        [9 - ..., 33] - albedo
+        [9 - ..., 34] - liquid precipitation depth
+        [9 - ..., 35] - liquid precipitation quantity
+        
