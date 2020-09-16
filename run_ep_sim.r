@@ -1,5 +1,5 @@
 # load global environment ####
-load('~/git/handy/inmet.rds')
+read.csv('~/git/handy/inmet_list.csv')
 
 # base functions ####
 # compile errors into one file
@@ -107,11 +107,11 @@ RunEPSim = function(model_path, epw_path, prefix, output_dir) {
 ProcessEPSims = function(sample, load_files, models_dir, epws_dir, weathers,
                          output_dir, cores_left, inmet, form = '\\.epJSON') {
   # load_files: 'TRUE' (generate grid according to files inside models_dir and epws_dir) or
-    # 'FALSE' (load the sample grid)
+  # 'FALSE' (load the sample grid)
   # models_dir: energyplus simulation files directory
   # epws_dir: energyplus weather files directory
   # weathers: vector of chosen weathers
-    # e.g.: c('rio_de_janeiro', 'sao_paulo')
+  # e.g.: c('rio_de_janeiro', 'sao_paulo')
   # sample: sample grid with simulation informations
   # output_dir: output directory
   # form: simulation file format (.epJSON or .idf)
